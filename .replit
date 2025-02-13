@@ -1,0 +1,7 @@
+modules = ["java-graalvm22.3"]
+run = "./mvnw spring-boot:run"
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-c", "./mvnw spring-boot:run"]
