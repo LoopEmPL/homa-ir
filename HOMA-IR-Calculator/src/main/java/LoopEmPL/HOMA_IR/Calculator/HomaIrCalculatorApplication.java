@@ -5,11 +5,40 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
+@RestController
 public class HomaIrCalculatorApplication {
     public static void main(String[] args) {
         SpringApplication.run(HomaIrCalculatorApplication.class, args);
+    }
+
+    @PostMapping("/calculate")
+    public HomaIRResponse calculateHomaIR(@RequestBody HomaIRRequest request) {
+        double homaIRValue = request.calculateHomaIR();
+        String interpretation = request.interpretHomaIR();
+        return new HomaIRResponse(homaIRValue, interpretation);
+    }
+
+    public static class HomaIRResponse {
+        private final double homaIRValue;
+        private final String interpretation;
+
+        public HomaIRResponse(double homaIRValue, String interpretation) {
+            this.homaIRValue = homaIRValue;
+            this.interpretation = interpretation;
+        }
+
+        public double getHomaIRValue() {
+            return homaIRValue;
+        }
+
+        public String getInterpretation() {
+            return interpretation;
+        }
     }
 
     public static class HomaIRRequest {
