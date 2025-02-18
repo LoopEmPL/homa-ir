@@ -5,9 +5,11 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import jakarta.validation.Valid;
 
 @SpringBootApplication
 @RestController
@@ -17,10 +19,39 @@ public class HomaIrCalculatorApplication {
     }
 
     @PostMapping("/calculate")
-    public HomaIRResponse calculateHomaIR(@RequestBody HomaIRRequest request) {
-        double homaIRValue = request.calculateHomaIR();
-        String interpretation = request.interpretHomaIR();
-        return new HomaIRResponse(homaIRValue, interpretation);
+    public ResponseEntity<?> calculateHomaIR(@Valid @RequestBody HomaIRRequest request) {
+        try {
+            double homaIRValue = request.calculateHomaIR();
+            String interpretation = request.interpretHomaIR();
+            return ResponseEntity.ok(new HomaIRResponse(homaIRValue, interpretation));
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse("Error calculating HOMA-IR: " + e.getMessage()));
+        }
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        String errorMessage = ex.getBindingResult().getFieldErrors().stream()
+            .map(error -> error.getField() + ": " + error.getDefaultMessage())
+            .findFirst()
+            .orElse("Validation error");
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(new ErrorResponse(errorMessage));
+    }
+
+    public static class ErrorResponse {
+        private final String message;
+
+        public ErrorResponse(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
     }
 
     public static class HomaIRResponse {
