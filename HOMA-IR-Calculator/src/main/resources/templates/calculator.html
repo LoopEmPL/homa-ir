@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>HOMA-IR Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>HOMA-IR Calculator</h1>
+    <form th:action="@{/calculate}" method="post">
+        <div class="form-group">
+            <label for="fastingInsulin">Fasting Insulin (μU/mL):</label>
+            <input type="number" id="fastingInsulin" name="fastingInsulin" step="0.1" required min="0.1">
+        </div>
+        <div class="form-group">
+            <label for="fastingGlucose">Fasting Glucose (mg/dL):</label>
+            <input type="number" id="fastingGlucose" name="fastingGlucose" step="0.1" required min="0.1">
+        </div>
+        <button type="submit">Calculate</button>
+    </form>
+    
+    <div class="result" th:if="${result != null}">
+        <h2>Results:</h2>
+        <p>HOMA-IR Value: <span th:text="${result.homaIRValue}"></span></p>
+        <p>Interpretation: <span th:text="${result.interpretation}"></span></p>
+    </div>
+</body>
+</html>
