@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import jakarta.validation.Valid;
 
 @SpringBootApplication
@@ -16,6 +18,7 @@ import jakarta.validation.Valid;
 public class HomaIrCalculatorApplication {
     public static void main(String[] args) {
         SpringApplication.run(HomaIrCalculatorApplication.class, args);
+    }
 
     @GetMapping("/")
     public String showCalculator() {
@@ -34,31 +37,21 @@ public class HomaIrCalculatorApplication {
         return "calculator";
     }
 
-
-    }
-
-    @PostMapping("/calculate")
-    public ResponseEntity<?> calculateHomaIR(@Valid @RequestBody HomaIRRequest request) {
-        try {
-            double homaIRValue = request.calculateHomaIR();
-            String interpretation = request.interpretHomaIR();
-            return ResponseEntity.ok(new HomaIRResponse(homaIRValue, interpretation));
-        } catch (Exception e) {
-            return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse("Error calculating HOMA-IR: " + e.getMessage()));
+    @RestController
+    @RequestMapping("/api")
+    public class ApiController {
+        @PostMapping("/calculate")
+        public ResponseEntity<?> calculateHomaIR(@Valid @RequestBody HomaIRRequest request) {
+            try {
+                double homaIRValue = request.calculateHomaIR();
+                String interpretation = request.interpretHomaIR();
+                return ResponseEntity.ok(new HomaIRResponse(homaIRValue, interpretation));
+            } catch (Exception e) {
+                return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Error calculating HOMA-IR: " + e.getMessage()));
+            }
         }
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        String errorMessage = ex.getBindingResult().getFieldErrors().stream()
-            .map(error -> error.getField() + ": " + error.getDefaultMessage())
-            .findFirst()
-            .orElse("Validation error");
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(new ErrorResponse(errorMessage));
     }
 
     public static class ErrorResponse {
