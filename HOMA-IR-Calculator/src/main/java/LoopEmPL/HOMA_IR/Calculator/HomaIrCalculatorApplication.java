@@ -14,27 +14,9 @@ import org.springframework.ui.Model;
 import jakarta.validation.Valid;
 
 @SpringBootApplication
-@Controller
 public class HomaIrCalculatorApplication {
     public static void main(String[] args) {
         SpringApplication.run(HomaIrCalculatorApplication.class, args);
-    }
-
-    @GetMapping("/")
-    public String showCalculator() {
-        return "calculator";
-    }
-
-    @PostMapping("/calculate")
-    public String calculateHomaIR(@Valid HomaIRRequest request, Model model) {
-        try {
-            double homaIRValue = request.calculateHomaIR();
-            String interpretation = request.interpretHomaIR();
-            model.addAttribute("result", new HomaIRResponse(homaIRValue, interpretation));
-        } catch (Exception e) {
-            model.addAttribute("error", "Error calculating HOMA-IR: " + e.getMessage());
-        }
-        return "calculator";
     }
 
     @RestController
