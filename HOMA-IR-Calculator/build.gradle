@@ -22,8 +22,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'com.h2database:h2'
-	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	runtimeOnly 'com.h2database:h2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testImplementation 'org.junit.jupiter:junit-jupiter-params'
@@ -31,4 +30,60 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+import jakarta.persistence.*;
+
+@Entity
+public class HomaIRResult {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private double fastingGlucose;
+    private double insulin;
+    private double homaIR;
+
+    // Constructors, getters, and setters
+    public HomaIRResult() {}
+
+    public HomaIRResult(double fastingGlucose, double insulin, double homaIR) {
+        this.fastingGlucose = fastingGlucose;
+        this.insulin = insulin;
+        this.homaIR = homaIR;
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public double getFastingGlucose() {
+        return fastingGlucose;
+    }
+
+    public void setFastingGlucose(double fastingGlucose) {
+        this.fastingGlucose = fastingGlucose;
+    }
+
+    public double getInsulin() {
+        return insulin;
+    }
+
+    public void setInsulin(double insulin) {
+        this.insulin = insulin;
+    }
+
+    public double getHomaIR() {
+        return homaIR;
+    }
+
+    public void setHomaIR(double homaIR) {
+        this.homaIR = homaIR;
+    }
 }
