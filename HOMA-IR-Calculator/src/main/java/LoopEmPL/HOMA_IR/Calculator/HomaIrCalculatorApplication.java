@@ -1,65 +1,17 @@
 
 package LoopEmPL.HOMA_IR.Calculator;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import jakarta.validation.Valid;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
+@EnableJpaRepositories
 public class HomaIrCalculatorApplication {
     public static void main(String[] args) {
         SpringApplication.run(HomaIrCalculatorApplication.class, args);
     }
-
-    @RestController
-    @RequestMapping("/api")
-    public class ApiController {
-        @PostMapping("/calculate")
-        public ResponseEntity<?> calculateHomaIR(@Valid @RequestBody HomaIRRequest request) {
-            try {
-                double homaIRValue = request.calculateHomaIR();
-                String interpretation = request.interpretHomaIR();
-                return ResponseEntity.ok(new HomaIRResponse(homaIRValue, interpretation));
-            } catch (Exception e) {
-                return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponse("Error calculating HOMA-IR: " + e.getMessage()));
-            }
-        }
-    }
-
-    public static class ErrorResponse {
-        private final String message;
-
-        public ErrorResponse(String message) {
-            this.message = message;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-    }
-
-    public static class HomaIRResponse {
-        private final double homaIRValue;
-        private final String interpretation;
-
-        public HomaIRResponse(double homaIRValue, String interpretation) {
-            this.homaIRValue = homaIRValue;
-            this.interpretation = interpretation;
-        }
-
-        public double getHomaIRValue() {
-            return homaIRValue;
-        }
+}
 
         public String getInterpretation() {
             return interpretation;

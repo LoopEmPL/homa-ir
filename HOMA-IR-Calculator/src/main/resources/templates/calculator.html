@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -24,41 +23,42 @@
 </head>
 <body>
     <div class="container calculator-container">
-        <h1 class="text-center mb-4">HOMA-IR Calculator</h1>
-        <form th:action="@{/calculate}" method="post" class="needs-validation" novalidate>
+        <h1 class="mb-4 text-center">HOMA-IR Calculator</h1>
+
+        <form th:action="@{/calculate}" th:object="${request}" method="post">
             <div class="mb-3">
-                <label for="fastingInsulin" class="form-label">Fasting Insulin (μU/mL):</label>
-                <input type="number" class="form-control" id="fastingInsulin" name="fastingInsulin" 
-                       step="0.1" required min="0.1" placeholder="Enter fasting insulin value">
+                <label for="fastingInsulin" class="form-label">Fasting Insulin (μU/mL)</label>
+                <input type="number" step="0.01" min="0" class="form-control" id="fastingInsulin" 
+                       th:field="*{fastingInsulin}" required>
             </div>
+
             <div class="mb-3">
-                <label for="fastingGlucose" class="form-label">Fasting Glucose (mg/dL):</label>
-                <input type="number" class="form-control" id="fastingGlucose" name="fastingGlucose" 
-                       step="0.1" required min="0.1" placeholder="Enter fasting glucose value">
+                <label for="fastingGlucose" class="form-label">Fasting Glucose (mg/dL)</label>
+                <input type="number" step="0.01" min="0" class="form-control" id="fastingGlucose" 
+                       th:field="*{fastingGlucose}" required>
             </div>
+
             <div class="d-grid">
-                <button type="submit" class="btn btn-primary btn-lg">Calculate HOMA-IR</button>
+                <button type="submit" class="btn btn-primary">Calculate</button>
             </div>
         </form>
-        
-        <div th:if="${result != null}" class="mt-4 p-3 result-card rounded">
-            <h2 class="h4 mb-3">Results:</h2>
-            <div class="row">
-                <div class="col-md-6">
-                    <p class="mb-2"><strong>HOMA-IR Value:</strong></p>
-                    <h3 class="h2 text-primary" th:text="${#numbers.formatDecimal(result.homaIRValue, 1, 2)}"></h3>
-                </div>
-                <div class="col-md-6">
-                    <p class="mb-2"><strong>Interpretation:</strong></p>
-                    <p class="h5" th:text="${result.interpretation}"></p>
+
+        <div th:if="${error}" class="alert alert-danger mt-4" role="alert" th:text="${error}"></div>
+
+        <div th:if="${result}" class="card mt-4">
+            <div class="card-header">Result</div>
+            <div class="card-body">
+                <h5 class="card-title">HOMA-IR: <span th:text="${#numbers.formatDecimal(result.homaIRValue, 1, 2)}"></span></h5>
+                <p class="card-text result-card p-3 mt-3" th:text="${result.interpretation}"></p>
+                <div th:if="${result.resultId}" class="text-end">
+                    <a th:href="@{'/result/' + ${result.resultId}}" class="btn btn-sm btn-info">View Details</a>
                 </div>
             </div>
         </div>
 
-        <div th:if="${error}" class="alert alert-danger mt-4" role="alert" th:text="${error}">
+        <div class="history-link">
+            <a href="/history" class="btn btn-outline-secondary mt-3">View Calculation History</a>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

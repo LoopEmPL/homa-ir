@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>HOMA-IR Result Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .result-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .result-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+        .result-interpretation {
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            background-color: #e9ecef;
+            border-left: 4px solid #0d6efd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container result-container">
+        <h1 class="mb-4 text-center">HOMA-IR Result Details</h1>
+        
+        <div class="card mb-4">
+            <div class="card-header">Calculation Information</div>
+            <div class="card-body">
+                <p><strong>Date:</strong> <span th:text="${#temporals.format(result.calculatedAt, 'yyyy-MM-dd HH:mm')}"></span></p>
+                <p><strong>ID:</strong> <span th:text="${result.id}"></span></p>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">Input Values</div>
+            <div class="card-body">
+                <p><strong>Fasting Insulin:</strong> <span th:text="${result.fastingInsulin}"></span> μU/mL</p>
+                <p><strong>Fasting Glucose:</strong> <span th:text="${result.fastingGlucose}"></span> mg/dL</p>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">Result</div>
+            <div class="card-body text-center">
+                <div class="result-value" th:text="${#numbers.formatDecimal(result.homaIRValue, 1, 2)}"></div>
+                <div class="result-interpretation">
+                    <strong>Interpretation:</strong> <span th:text="${result.interpretation}"></span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="/history" class="btn btn-secondary me-2">Back to History</a>
+            <a href="/" class="btn btn-primary">New Calculation</a>
+        </div>
+    </div>
+</body>
+</html>
