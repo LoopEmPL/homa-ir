@@ -15,41 +15,32 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class ApiController {
-    
+
     private final HomaIRService homaIRService;
-    
+
     @Autowired
     public ApiController(HomaIRService homaIRService) {
         this.homaIRService = homaIRService;
     }
-    
+
     @PostMapping("/calculate")
     public ResponseEntity<?> calculateHomaIR(@Valid @RequestBody HomaIRRequest request) {
         try {
-            double homaIRValue = request.calculateHomaIR();
-            String interpretation = request.interpretHomaIR();
-            
-            // Save the result to the database
-            HomaIRResult savedResult = homaIRService.saveResult(
-                request.getFastingInsulin(),
-                request.getFastingGlucose(),
-                homaIRValue,
-                interpretation
-            );
-            
-            return ResponseEntity.ok(new HomaIRResponse(homaIRValue, interpretation, savedResult.getId()));
+            // Use service to calculate and save in one operation
+            HomaIRResponse response = homaIRService.calculateAndSaveResult(request);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse("Error calculating HOMA-IR: " + e.getMessage()));
         }
     }
-    
+
     @GetMapping("/results")
     public ResponseEntity<List<HomaIRResult>> getAllResults() {
         return ResponseEntity.ok(homaIRService.getAllResults());
     }
-    
+
     @GetMapping("/results/{id}")
     public ResponseEntity<?> getResultById(@PathVariable Long id) {
         HomaIRResult result = homaIRService.getResultById(id);
@@ -59,7 +50,7 @@ public class ApiController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     public static class ErrorResponse {
         private final String message;
 

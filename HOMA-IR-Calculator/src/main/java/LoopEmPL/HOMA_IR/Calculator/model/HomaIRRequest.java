@@ -36,20 +36,5 @@ public class HomaIRRequest {
         this.fastingGlucose = fastingGlucose;
     }
 
-    public double calculateHomaIR() {
-        return (fastingInsulin * fastingGlucose) / 22.5;
-    }
-
-    public String interpretHomaIR() {
-        double homaIR = calculateHomaIR();
-        if (homaIR < 1.0) {
-            return "Normal insulin sensitivity";
-        } else if (homaIR >= 1.0 && homaIR <= 1.9) {
-            return "Moderate insulin sensitivity";
-        } else if (homaIR > 1.9 && homaIR < 2.9) {
-            return "Moderate insulin resistance";
-        } else {
-            return "Significant insulin resistance";
-        }
-    }
+    // Calculation logic moved to HomaIRService
 }

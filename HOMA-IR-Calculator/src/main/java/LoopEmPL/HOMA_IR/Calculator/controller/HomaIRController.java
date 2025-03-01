@@ -34,18 +34,9 @@ public class HomaIRController {
     @PostMapping("/calculate")
     public String calculateHomaIR(@Valid HomaIRRequest request, Model model) {
         try {
-            double homaIRValue = request.calculateHomaIR();
-            String interpretation = request.interpretHomaIR();
-            
-            // Save the result to the database
-            HomaIRResult savedResult = homaIRService.saveResult(
-                request.getFastingInsulin(),
-                request.getFastingGlucose(),
-                homaIRValue,
-                interpretation
-            );
-            
-            model.addAttribute("result", new HomaIRResponse(homaIRValue, interpretation, savedResult.getId()));
+            // Use service to calculate and save in one operation
+            HomaIRResponse response = homaIRService.calculateAndSaveResult(request);
+            model.addAttribute("result", response);
         } catch (Exception e) {
             model.addAttribute("error", "Error calculating HOMA-IR: " + e.getMessage());
         }
