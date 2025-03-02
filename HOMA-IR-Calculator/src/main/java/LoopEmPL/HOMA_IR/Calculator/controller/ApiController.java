@@ -40,6 +40,11 @@ public class ApiController {
     public ResponseEntity<List<HomaIRResult>> getAllResults() {
         return ResponseEntity.ok(homaIRService.getAllResults());
     }
+    
+    @GetMapping("/homa-ir/history")
+    public ResponseEntity<List<HomaIRResult>> getHomaIrHistory() {
+        return ResponseEntity.ok(homaIRService.getAllResults());
+    }
 
     @GetMapping("/results/{id}")
     public ResponseEntity<?> getResultById(@PathVariable Long id) {
