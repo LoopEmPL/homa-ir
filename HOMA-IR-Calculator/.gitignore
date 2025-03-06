@@ -35,3 +35,15 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Maven repository
+.mvn/
+
+# Database files
+*.h2.db
+h2.v.db
+
+# IDE-specific files
+.idea/
+*.iml
+
